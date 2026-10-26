@@ -1,0 +1,162 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+codebase/
+  backend/
+    Dockerfile
+    index.js
+    package.json
+  frontend/
+    Dockerfile
+    index.html
+    index.js
+  .gitignore
+  JenkinsFile
+  k8s-deploy.sh
+MarkScheme.xlsx
+Python-Git-SQL-Brief.docx
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="codebase/backend/Dockerfile">
+# Backend Dockerfile for Express App
+# Will require Node and packages installed with npm install.
+# Entrypoint of express app is `node index.js`
+</file>
+
+<file path="codebase/backend/index.js">
+const express = require('express');
+const randomColor = require('randomcolor');
+const cors = require('cors');
+const app = express();
+const port = 5000;
+
+app.use(cors());
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.get('/colour', (req, res) => res.send(`${randomColor()}`))
+
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+</file>
+
+<file path="codebase/backend/package.json">
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "randomcolor": "^0.6.2"
+  }
+}
+</file>
+
+<file path="codebase/frontend/Dockerfile">
+# Dockerfile to host the files as a web server 
+# Should be using nginx with the html and js files moved over to the default nginx location /usr/share/nginx/html
+</file>
+
+<file path="codebase/frontend/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool-app</title>
+</head>
+<body>
+
+    <h1> Really Really Cool App </h1>
+    
+    <script src="index.js"></script>
+</body>
+</html>
+</file>
+
+<file path="codebase/frontend/index.js">
+'use strict'
+
+const header = document.querySelector('h1');
+
+fetch('http://localhost:5000/colour').then((response) => {
+    response.text().then((data) => {
+        header.style.color = data;
+    })
+})
+</file>
+
+<file path="codebase/.gitignore">
+*/node_modules
+</file>
+
+<file path="codebase/JenkinsFile">
+# JenkinsFile for our CI CD Server
+</file>
+
+<file path="codebase/k8s-deploy.sh">
+
+</file>
+
+<file path="README.md">
+Two tier application with an Express Backend and an nginx frontend with custom html and js files added. 
+Ports required are: 80, 5000 and will require the use of DNS resolution.
+
+Total project will include:
+- Finishing Dockerfiles and building Docker Images
+- Separate instance with Jenkins installed as a CI CD Server
+- Kubernetes cluster with a deployment of 2x backend pods and 2x frontend pods
+</file>
+
+</files>

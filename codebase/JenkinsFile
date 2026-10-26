@@ -1,1 +1,58 @@
-# JenkinsFile for our CI CD Server
+pipeline {
+    agent any
+
+    environment {
+        BACKEND_IMAGE  = 'ademoladevops/qaa-backend'
+        FRONTEND_IMAGE = 'ademoladevops/qaa-frontend'
+        TAG            = "${env.BUILD_NUMBER}"
+    }
+
+    triggers {
+        githubPush()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Images') {
+            steps {
+                dir('codebase') {
+                    sh 'docker build -t $BACKEND_IMAGE:$TAG -t $BACKEND_IMAGE:latest backend'
+                    sh 'docker build -t $FRONTEND_IMAGE:$TAG -t $FRONTEND_IMAGE:latest frontend'
+                }
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                                                  usernameVariable: 'DH_USER',
+                                                  passwordVariable: 'DH_PASS')]) {
+                    sh 'echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin'
+                    sh 'docker push $BACKEND_IMAGE:$TAG'
+                    sh 'docker push $BACKEND_IMAGE:latest'
+                    sh 'docker push $FRONTEND_IMAGE:$TAG'
+                    sh 'docker push $FRONTEND_IMAGE:latest'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir('codebase') {
+                    sh './k8s-deploy.sh $TAG'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+        }
+    }
+}
